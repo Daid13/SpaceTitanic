@@ -14,7 +14,7 @@ for col in discrete_columns:
     for value in col_values:
         print(col, value)
         temp_df=df[df[col]==value]
-        print(temp_df["Transported"].value_counts("True"))
+        print(temp_df["Transported"].value_counts())
         
 
 #iterate through relevant columms
