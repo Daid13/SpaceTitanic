@@ -3,23 +3,42 @@ from matplotlib import pyplot as plt
 
 
 def do_scatterplot(i, col):
-    ax = f.add_subplot(7, 2, i)
-    ax.boxplot([nottransported[col], transported[col]], vert=False)
+    ax = f.add_subplot(5, 2, i)
+    ax.boxplot([not_transported[col], transported[col]], vert=False)
     ax.set_yticklabels(["Still here", "Gone...."])
     ax.set_title(col, loc="right", y=0.6)
 
+def do_bar(i, col):
+    ax = f.add_subplot(5, 2, i)
+
+    still_here, gone = 0, 0
+    for val in df[col].sort_values().unique():
+        d_still_here = not_transported[col].where(lambda x: x == val).count()
+        d_gone = transported[col].where(lambda x: x == val).count()
+        ax.barh([False, True],
+           [d_still_here, d_gone],
+           left = [still_here, gone]
+        )
+        still_here += d_still_here
+        gone += d_gone
+
+    ax.set_yticks([False, True])
+    ax.set_yticklabels(["Still here", "Gone...."])
+    ax.set_title(col, loc="right", y=0.6)
+    ax.legend(df[col].sort_values().unique())
+
 
 df = pd.read_csv("data/train.csv")
-nottransported = df.where(lambda p: p["Transported"] == False).dropna()
+not_transported = df.where(lambda p: p["Transported"] == False).dropna()
 transported = df.where(lambda p: p["Transported"] == True).dropna()
 graph_type = {
     "PassengerId": "nope",
-    "HomePlanet": "nope",
-    "CryoSleep": "scatter",
+    "HomePlanet": "bar",
+    "CryoSleep": "bar",
     "Cabin": "nope",
-    "Destination": "nope",
+    "Destination": "bar",
     "Age": "scatter",
-    "VIP": "scatter",
+    "VIP": "bar",
     "RoomService": "scatter",
     "FoodCourt": "scatter",
     "ShoppingMall": "scatter",
@@ -33,6 +52,9 @@ print(df.columns)
 for col in df.columns:
     print(col, df[col].sort_values().unique())
 
+print(not_transported['CryoSleep'].where(lambda x: x == False).count())
+print(transported['CryoSleep'].where(lambda x: x == False).count())
+
 f = plt.figure()
 i = 0
 for col in df.columns:
@@ -41,6 +63,9 @@ for col in df.columns:
             i += 1
             print(i)
             do_scatterplot(i, col)
+        case "bar":
+            i += 1
+            do_bar(i, col)
         case _:
             pass
 
