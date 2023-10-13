@@ -7,6 +7,7 @@ def do_scatterplot(i, col):
     ax.boxplot([not_transported[col].dropna(), transported[col].dropna()], vert=False)
     ax.set_yticklabels(["Still here", "Gone...."] if i%2 != 0 else [])
     ax.set_title(col, loc="right", y=0.6)
+    ax.set_ylim(0, 4)
 
 def do_bar(i, col):
     ax = f.add_subplot(5, 2, i)
@@ -27,7 +28,8 @@ def do_bar(i, col):
     ax.set_yticks([False, True])
     ax.set_yticklabels(["Still here", "Gone...."] if i%2 != 0 else [])
     ax.set_title(col, loc="right", y=0.6)
-    ax.legend(valid_values + ["NaN"])
+    ax.legend(valid_values + ["NaN"], loc = 'upper left', fontsize = 'x-small')
+    ax.set_ylim(-1, 3)
 
 
 df = pd.read_csv("data/train.csv")
