@@ -4,33 +4,35 @@ from matplotlib import pyplot as plt
 
 def do_scatterplot(i, col):
     ax = f.add_subplot(5, 2, i)
-    ax.boxplot([not_transported[col], transported[col]], vert=False)
+    ax.boxplot([not_transported[col].dropna(), transported[col].dropna()], vert=False)
     ax.set_yticklabels(["Still here", "Gone...."])
     ax.set_title(col, loc="right", y=0.6)
 
 def do_bar(i, col):
     ax = f.add_subplot(5, 2, i)
 
+    valid_values = list(df[col].dropna().sort_values().unique())
     still_here, gone = 0, 0
-    for val in df[col].sort_values().unique():
-        d_still_here = not_transported[col].where(lambda x: x == val).count()
-        d_gone = transported[col].where(lambda x: x == val).count()
-        ax.barh([False, True],
-           [d_still_here, d_gone],
-           left = [still_here, gone]
-        )
+    for val in valid_values:
+        d_still_here = not_transported[col][not_transported[col] == val].count()
+        d_gone = transported[col][transported[col] == val].count()
+        ax.barh([False, True], [d_still_here, d_gone], left = [still_here, gone])
         still_here += d_still_here
         gone += d_gone
+    ax.barh([False, True],
+            [len(not_transported['VIP'][not_transported['VIP'].isna() == True]),
+                len(transported['VIP'][transported['VIP'].isna() == True])],
+            left=[still_here, gone])
 
     ax.set_yticks([False, True])
     ax.set_yticklabels(["Still here", "Gone...."])
     ax.set_title(col, loc="right", y=0.6)
-    ax.legend(df[col].sort_values().unique())
+    ax.legend(valid_values + ["NaN"])
 
 
 df = pd.read_csv("data/train.csv")
-not_transported = df.where(lambda p: p["Transported"] == False).dropna()
-transported = df.where(lambda p: p["Transported"] == True).dropna()
+not_transported = df[df['Transported'] == False]
+transported = df[df['Transported'] == True]
 graph_type = {
     "PassengerId": "nope",
     "HomePlanet": "bar",
