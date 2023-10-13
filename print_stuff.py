@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 def do_scatterplot(i, col):
     ax = f.add_subplot(5, 2, i)
     ax.boxplot([not_transported[col].dropna(), transported[col].dropna()], vert=False)
-    ax.set_yticklabels(["Still here", "Gone...."])
+    ax.set_yticklabels(["Still here", "Gone...."] if i%2 != 0 else [])
     ax.set_title(col, loc="right", y=0.6)
 
 def do_bar(i, col):
@@ -25,7 +25,7 @@ def do_bar(i, col):
             left=[still_here, gone])
 
     ax.set_yticks([False, True])
-    ax.set_yticklabels(["Still here", "Gone...."])
+    ax.set_yticklabels(["Still here", "Gone...."] if i%2 != 0 else [])
     ax.set_title(col, loc="right", y=0.6)
     ax.legend(valid_values + ["NaN"])
 
