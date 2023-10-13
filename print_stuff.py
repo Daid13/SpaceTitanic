@@ -52,16 +52,12 @@ print(df.columns)
 for col in df.columns:
     print(col, df[col].sort_values().unique())
 
-print(not_transported['CryoSleep'].where(lambda x: x == False).count())
-print(transported['CryoSleep'].where(lambda x: x == False).count())
-
 f = plt.figure()
 i = 0
 for col in df.columns:
     match graph_type[col]:
         case "scatter":
             i += 1
-            print(i)
             do_scatterplot(i, col)
         case "bar":
             i += 1
