@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 
 def do_scatterplot(i, col):
     ax = f.add_subplot(5, 2, i)
-    ax.boxplot([not_transported[col].dropna(), transported[col].dropna()], vert=False)
+    ax.boxplot([not_transported[col].dropna(), transported[col].dropna()], vert=False, showfliers=False)
     ax.set_yticklabels(["Still here", "Gone...."] if i%2 != 0 else [])
     ax.set_title(col, loc="right", y=0.6)
     ax.set_ylim(0, 4)
