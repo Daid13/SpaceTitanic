@@ -29,6 +29,20 @@ def do_bar(i, col):
     ax.set_ylim(-1, 3)
 
 
+def do_hist(i, col):
+    ax = f.add_subplot(3, 2, i)
+
+    still_here = not_transported[col].dropna().astype('int32')
+    gone = transported[col].dropna().astype('int32')
+    max_value = df[col].dropna().astype('int32').max()
+
+    bottom = ax.hist(still_here, range=(0, max_value), bins=20)
+    ax.hist(gone, range=(0, max_value), bins=20, bottom=bottom[0])
+    
+    ax.set_title(col, loc="right", y=0.6)
+    ax.legend(["Still here", "Gone...."], loc="upper left", fontsize="x-small")
+
+
 df = pd.read_csv('data/train.csv')
 
 _matchCabins = df['Cabin'].str.match('[A-Z]/\\d{,4}/[A-Z]')
@@ -49,5 +63,8 @@ i = 0
 for col in ['cabin_1', 'cabin_3', 'group_2']:
     i += 1
     do_bar(i, col)
+for col in ['cabin_2', 'group_1']:
+    i += 1
+    do_hist(i, col)
 
 f.savefig("groups_and_cabins.png")
