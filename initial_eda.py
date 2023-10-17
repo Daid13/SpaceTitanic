@@ -2,7 +2,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 
 
-def do_scatterplot(i, col):
+def do_boxplot(i, col):
     ax = f.add_subplot(5, 2, i)
     ax.boxplot(
         [not_transported[col].dropna(), transported[col].dropna()],
@@ -50,13 +50,13 @@ graph_type = {
     "CryoSleep": "bar",
     "Cabin": "nope",
     "Destination": "bar",
-    "Age": "scatter",
+    "Age": "boxplot",
     "VIP": "bar",
-    "RoomService": "scatter",
-    "FoodCourt": "scatter",
-    "ShoppingMall": "scatter",
-    "Spa": "scatter",
-    "VRDeck": "scatter",
+    "RoomService": "boxplot",
+    "FoodCourt": "boxplot",
+    "ShoppingMall": "boxplot",
+    "Spa": "boxplot",
+    "VRDeck": "boxplot",
     "Name": "nope",
     "Transported": "nope",
 }
@@ -69,9 +69,9 @@ f = plt.figure()
 i = 0
 for col in df.columns:
     match graph_type[col]:
-        case "scatter":
+        case "boxplot":
             i += 1
-            do_scatterplot(i, col)
+            do_boxplot(i, col)
         case "bar":
             i += 1
             do_bar(i, col)
