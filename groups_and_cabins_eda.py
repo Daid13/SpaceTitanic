@@ -56,15 +56,27 @@ df[['cabin_1', 'cabin_2', 'cabin_3']] = _cabins
 df[['group_1', 'group_2']] = _groups
 not_transported = df[df["Transported"] == False]
 transported = df[df["Transported"] == True]
+graph_type = {
+    'cabin_1': 'bar',
+    'cabin_2': 'hist',
+    'cabin_3': 'bar',
+    'group_1': 'hist',
+    'group_2': 'bar'
+}
+
 print(df)
 
 f = plt.figure()
 i = 0
-for col in ['cabin_1', 'cabin_3', 'group_2']:
+for col in ['cabin_1', 'cabin_2', 'cabin_3', 'group_1', 'group_2']:
     i += 1
-    do_bar(i, col)
-for col in ['cabin_2', 'group_1']:
-    i += 1
-    do_hist(i, col)
+
+    match graph_type[col]:
+        case 'bar':
+            do_bar(i, col)
+        case 'hist':
+            do_hist(i, col)
+        case _:
+            pass
 
 f.savefig("groups_and_cabins.png")
