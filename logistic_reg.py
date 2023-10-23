@@ -8,6 +8,8 @@ data = pd.read_csv('data/train.csv')
 #---- 2. CLEANING
 data['Transported'] = data['Transported'].astype('int32')
 
+data[['RoomService', 'FoodCourt', 'ShoppingMall', 'Spa', 'VRDeck']] = data[['RoomService', 'FoodCourt', 'ShoppingMall', 'Spa', 'VRDeck']].fillna(0.)
+
 #---- 3. TRAIN-TEST SPLIT
 data_train = data.sample(frac=.8, random_state=400)
 data_test = data.drop(data_train.index.tolist())
