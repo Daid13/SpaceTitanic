@@ -7,6 +7,7 @@ data = pd.read_csv('data/train.csv')
 
 #---- 2. CLEANING
 data['Transported'] = data['Transported'].astype('int32')
+data["IsNull_" + data.columns] = data.isna()
 
 #---- 3. TRAIN-TEST SPLIT
 data_train = data.sample(frac=.8, random_state=400)
@@ -19,7 +20,7 @@ print(fit_results.summary())
 print(fit_results.pred_table())
 
 #---- 5. PREDICTING
-predictions = fit_results.predict(data_test.iloc[:,:-1])
+predictions = fit_results.predict(data_test.drop(columns='Transported'))
 actuals_predicts = pd.DataFrame({'actual': data_test['Transported'], 'predicted': predictions}).dropna()
 actuals_predicts['predicted'] = (actuals_predicts['predicted'] >= .5).astype('int32')
 
