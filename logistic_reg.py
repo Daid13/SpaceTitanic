@@ -9,12 +9,27 @@ data = pd.read_csv('data/train.csv')
 data['Transported'] = data['Transported'].astype('int32')
 data["IsNull_" + data.columns] = data.isna()
 
+data = pd.concat([data, pd.DataFrame({"HomePlanet_Earth": data['HomePlanet'] == 'Earth',
+                                      "HomePlanet_Europa": data['HomePlanet'] == 'Europa',
+                                      "HomePlanet_Mars": data['HomePlanet'] == 'Mars'})], axis=1)
+data = pd.concat([data, pd.DataFrame({"Destination_TRAPPIST": data['Destination'] == 'TRAPPIST-1e',
+                                      "Destination_PSO": data['Destination'] == 'PSO J318.5-22',
+                                      "Destination_Cancri": data['Destination'] == '55 Cancri e'})], axis=1)
+
+data[['CryoSleep', 'VIP']] = data[['CryoSleep', 'VIP']].fillna(False)
+data['Age'].fillna(0., inplace=True)
+data[['RoomService', 'FoodCourt', 'ShoppingMall', 'Spa', 'VRDeck']] = data[['RoomService', 'FoodCourt', 'ShoppingMall', 'Spa', 'VRDeck']].fillna(0.)
+
 #---- 3. TRAIN-TEST SPLIT
 data_train = data.sample(frac=.8, random_state=400)
 data_test = data.drop(data_train.index.tolist())
 
 #---- 4. FITTING
-model = smf.logit('Transported ~ HomePlanet + CryoSleep + Destination + Age + VIP + RoomService + FoodCourt + ShoppingMall + Spa + VRDeck', data_train)
+model = smf.logit(
+    'Transported ~ HomePlanet_Earth + HomePlanet_Europa + HomePlanet_Mars + CryoSleep + IsNull_CryoSleep + Destination_TRAPPIST + Destination_PSO + Destination_Cancri' \
+    ' + Age + IsNull_Age + VIP + IsNull_VIP + RoomService + IsNull_RoomService + FoodCourt + IsNull_FoodCourt + ShoppingMall + IsNull_ShoppingMall + Spa + IsNull_Spa' \
+    ' + VRDeck + IsNull_VRDeck' \
+    , data_train)
 fit_results = model.fit()
 print(fit_results.summary())
 print(fit_results.pred_table())
