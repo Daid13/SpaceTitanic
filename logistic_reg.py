@@ -26,9 +26,8 @@ data_test = data.drop(data_train.index.tolist())
 
 #---- 4. FITTING
 model = smf.logit(
-    'Transported ~ HomePlanet_Earth + HomePlanet_Europa + HomePlanet_Mars + CryoSleep + IsNull_CryoSleep + Destination_TRAPPIST + Destination_PSO + Destination_Cancri' \
-    ' + Age + IsNull_Age + VIP + IsNull_VIP + RoomService + IsNull_RoomService + FoodCourt + IsNull_FoodCourt + ShoppingMall + IsNull_ShoppingMall + Spa + IsNull_Spa' \
-    ' + VRDeck + IsNull_VRDeck' \
+    'Transported ~ HomePlanet_Earth + HomePlanet_Europa + CryoSleep + IsNull_CryoSleep + Destination_TRAPPIST + Destination_PSO + Age' \
+    ' + RoomService + IsNull_RoomService + FoodCourt + ShoppingMall + Spa + VRDeck' \
     , data_train)
 fit_results = model.fit()
 print(fit_results.summary())
