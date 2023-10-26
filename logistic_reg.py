@@ -10,6 +10,8 @@ test = pd.read_csv('data/test.csv')
 main['Transported'] = main['Transported'].astype('int32')
 
 for df in [main, test]:
+    df[["cabin_1", "cabin_2", "cabin_3"]] = df["Cabin"].str.split("/", expand=True)
+
     df['HomePlanet'].fillna(df['HomePlanet'].mode()[0], inplace=True)
     df['CryoSleep'].fillna(df['CryoSleep'].mode()[0], inplace=True)
     df['Destination'].fillna(df['Destination'].mode()[0], inplace=True)
@@ -20,6 +22,9 @@ for df in [main, test]:
     df['ShoppingMall'].fillna(df['ShoppingMall'].mean(), inplace=True)
     df['Spa'].fillna(df['Spa'].mean(), inplace=True)
     df['VRDeck'].fillna(df['VRDeck'].mean(), inplace=True)
+    df['cabin_3'].fillna(df['cabin_3'].mode()[0], inplace=True)
+
+    df['cabin_starboard'] = (df['cabin_3'] == 'S')
 
 main = pd.concat([main, pd.DataFrame({"HomePlanet_Earth": main['HomePlanet'] == 'Earth',
                                     "HomePlanet_Europa": main['HomePlanet'] == 'Europa'})], axis=1)
@@ -37,7 +42,7 @@ main_test = main.drop(main_train.index.tolist())
 #---- 4. FITTING
 model = smf.logit(
     'Transported ~ HomePlanet_Earth + HomePlanet_Europa + CryoSleep + Destination_TRAPPIST + Destination_PSO + Age' \
-    ' + RoomService + FoodCourt + ShoppingMall + Spa + VRDeck' \
+    ' + RoomService + FoodCourt + ShoppingMall + Spa + VRDeck + cabin_starboard' \
     , main_train)
 fit_results = model.fit()
 print(fit_results.summary())
