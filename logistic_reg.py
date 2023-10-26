@@ -39,7 +39,7 @@ print(fit_results.pred_table())
 
 #---- 5. PREDICTING
 predictions = fit_results.predict(data_test.drop(columns='Transported'))
-actuals_predicts = pd.DataFrame({'actual': data_test['Transported'], 'predicted': predictions}).dropna()
+actuals_predicts = pd.DataFrame({'actual': data_test['Transported'], 'predicted': predictions})
 actuals_predicts['predicted'] = (actuals_predicts['predicted'] >= .5).astype('int32')
 
 print('\nPrediction accuracy for test set:')
