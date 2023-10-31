@@ -23,10 +23,12 @@ for df in [main, test]:
     df['Spa'].fillna(df['Spa'].mean(), inplace=True)
     df['VRDeck'].fillna(df['VRDeck'].mean(), inplace=True)
     df['cabin_1'].fillna(df['cabin_1'].mode()[0], inplace=True)
+    df['cabin_2'].fillna(df['cabin_2'].mode()[0], inplace=True)
     df['cabin_3'].fillna(df['cabin_3'].mode()[0], inplace=True)
 
     for deck in ["A", "B", "C", "D", "E", "F", "G"]:
         df[f"cabin_{deck}"] = (df['cabin_1'] == deck)
+    df['cabin_2'] = df['cabin_2'].astype('int32')
     df['cabin_starboard'] = (df['cabin_3'] == 'S')
 
 main = pd.concat([main, pd.DataFrame({"HomePlanet_Earth": main['HomePlanet'] == 'Earth',
