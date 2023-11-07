@@ -11,6 +11,7 @@ main['Transported'] = main['Transported'].astype('int32')
 
 for df in [main, test]:
     df[["cabin_1", "cabin_2", "cabin_3"]] = df["Cabin"].str.split("/", expand=True)
+    df[["group", "subgroup"]] = df["PassengerId"].str.split("_", expand=True)
 
     df['HomePlanet'].fillna(df['HomePlanet'].mode()[0], inplace=True)
     df['CryoSleep'].fillna(df['CryoSleep'].mode()[0], inplace=True)
@@ -25,11 +26,14 @@ for df in [main, test]:
     df['cabin_1'].fillna(df['cabin_1'].mode()[0], inplace=True)
     df['cabin_2'].fillna(df['cabin_2'].mode()[0], inplace=True)
     df['cabin_3'].fillna(df['cabin_3'].mode()[0], inplace=True)
+    df['subgroup'].fillna(df['subgroup'].mode()[0], inplace=True)
 
     for deck in ["A", "B", "C", "D", "E", "F", "G"]:
         df[f"cabin_{deck}"] = (df['cabin_1'] == deck)
     df['cabin_2'] = df['cabin_2'].astype('int32')
     df['cabin_starboard'] = (df['cabin_3'] == 'S')
+    for subgroup in ["01", "02", "03", "04", "05", "06", "07"]:
+        df[f"subgroup_{subgroup}"] = (df['subgroup'] == subgroup)
 
 main = pd.concat([main, pd.DataFrame({"HomePlanet_Earth": main['HomePlanet'] == 'Earth',
                                     "HomePlanet_Europa": main['HomePlanet'] == 'Europa'})], axis=1)
@@ -47,7 +51,7 @@ main_test = main.drop(main_train.index.tolist())
 #---- 4. FITTING
 model = smf.logit(
     'Transported ~ HomePlanet_Earth + HomePlanet_Europa + CryoSleep + Destination_TRAPPIST + Destination_PSO + Age' \
-    ' + RoomService + FoodCourt + ShoppingMall + Spa + VRDeck + cabin_starboard' \
+    ' + RoomService + FoodCourt + ShoppingMall + Spa + VRDeck + cabin_starboard + subgroup_03' \
     , main_train)
 fit_results = model.fit()
 print(fit_results.summary())
